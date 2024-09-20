@@ -43,27 +43,33 @@ public class MensajeroLocal {
         // Crea un gestor de valoraciones
         GestorPaquetes gestor = new GestorPaquetes();
 
+        /*
         System.out.print("Introduce tu código de mensajero: ");
         String codMensajero = teclado.nextLine();
+        */
 
         int opcion;
         do {
             opcion = menu(teclado);
             switch (opcion) {
                 case 0 -> { // Guardar los datos en el fichero y salir del programa
-
-                    // POR IMPLEMENTAR
-
+                    gestor.guardaDatos();
+                    System.out.println("Saliendo del programa...");
                 }
                 case 1 -> { // Listar los paquetes enviados a un CP
-
-                    // POR IMPLEMENTAR
-
+                    System.out.printf("Introduce un CPDestino valido: ");
+                    String cpDestino = teclado.nextLine();
+                    JSONArray imprimir= gestor.listaPaquetesCP(cpDestino);
+                    System.out.println(imprimir);
                 }
                 case 2 -> { // Recoger un paquete con un código dado
-
-                    // POR IMPLEMENTAR
-
+                    System.out.printf("Introduce un codigo de paquete valido: ");
+                    long paquete = teclado.nextLong();
+                    teclado.nextLine();
+                    System.out.printf("Introduce un codigo de mensajero: ");
+                    String cod_mensajero = teclado.nextLine();
+                    gestor.recogePaquete(paquete,cod_mensajero);
+                    gestor.guardaDatos();
                 }
 
             } // fin switch
