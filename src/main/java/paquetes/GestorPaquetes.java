@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Vector;
 
 public class GestorPaquetes {
@@ -235,10 +236,10 @@ public class GestorPaquetes {
         JSONObject res = new JSONObject();
         for (Paquete paquete : mapa.get(codCliente)) {
             if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {
-                if (!paquete.getCPOrigen().isEmpty()) {
+                if (!paquete.getCPOrigen().isEmpty() && !CPOrigen.isEmpty()) {
                     paquete.setCPOrigen(CPOrigen);
                 }
-                if (!paquete.getCPDestino().isEmpty()) {
+                if (!paquete.getCPDestino().isEmpty() && !CPDestino.isEmpty()) {
                     paquete.setCPDestino(CPDestino);
                 }
                 if (paquete.getPeso() != 0.0) paquete.setPeso(peso);

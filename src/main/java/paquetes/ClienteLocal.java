@@ -93,6 +93,7 @@ public class ClienteLocal {
                         double peso = teclado.nextDouble();
                         gestor.modificaPaquete(codCliente, paquete, origen, destino, peso);
                         System.out.println("Paquete modificado correctamente");
+                        gestor.guardaDatos();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
