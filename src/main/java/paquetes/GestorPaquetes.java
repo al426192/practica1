@@ -22,7 +22,7 @@ public class GestorPaquetes {
      * La clave es el codigo único de los clientes.
      * El valor es un vector con todos los paquetes enviados por el cliente
      */
-    private HashMap<String, Vector<Paquete>> mapa = new HashMap<>();//codigo_cliente--vector de paquetes
+    private HashMap<String, Vector<Paquete>> mapa = new HashMap<>();//codigo_cliente<-->vector de paquetes
 
 
     /**
@@ -33,15 +33,14 @@ public class GestorPaquetes {
         this.mapa = new HashMap<String, Vector<Paquete>>();
         File file = new File("paquetes.json");
         try {
+            // Si no existe el fichero de datos, los genera, rellena el diccionario y los escribe en el fichero
             if (!file.exists()) {
-                // Si no existe el fichero de datos, los genera, rellena el diccionario y los escribe en el fichero
                 os = new FileWriter(file);
                 generaDatos();
                 escribeFichero(os);
                 os.close();
             } else {
                 // Si existe el fichero o lo acaba de crear, lo lee y rellena el diccionario con los datos
-                // stream para leer los datos del fichero
                 FileReader is = new FileReader(file);
                 leeFichero(is);
                 is.close();
@@ -56,7 +55,7 @@ public class GestorPaquetes {
      * Cuando cada cliente cierra su sesión volcamos los datos en el fichero para mantenerlos actualizados
      */
     public void guardaDatos() {
-        File file = new File("paquetes.json");
+        File file = new File("paquetes.json");//creamos el fichero json y posteriormente guardamos en el los datos
         try {
             os = new FileWriter(file);
             escribeFichero(os);
@@ -74,15 +73,15 @@ public class GestorPaquetes {
      */
     @SuppressWarnings("unchecked")
     private void escribeFichero(FileWriter os) {
-        JSONArray jsonArray = new JSONArray();
-        for (String codCliente : mapa.keySet()) {
+        JSONArray jsonArray = new JSONArray();//array de objetos json
+        for (String codCliente : mapa.keySet()) {//Añadimos los paquetes como objetos json al arrayjson
             Vector<Paquete> paquetes = mapa.get(codCliente);
             for (Paquete paquete : paquetes) {
                 jsonArray.add(paquete.toJSON());
             }
         }
         try {
-            os.write(jsonArray.toJSONString());
+            os.write(jsonArray.toJSONString());//Añadimos el arrayjson al fichero
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,12 +94,13 @@ public class GestorPaquetes {
      */
     private void almacenaPaquete(Paquete paquete) throws Exception {
         if (paquete == null) throw new Exception("Paquete vacio o nulo");
+        //Buscamos el cliente en el mapa y le añadimos ese paquete
         String cliente = paquete.getCodCliente();
-        if (mapa.containsKey(cliente)) {
-            if (mapa.get(cliente).isEmpty()) {
+        if (mapa.containsKey(cliente)) {//cliente existente
+            if (mapa.get(cliente).isEmpty()) {//sin paquetes
                 mapa.put(cliente, new Vector<>());
             }
-        } else {
+        } else {//cliente nuevo
             mapa.put(cliente, new Vector<>());
 
         }
@@ -146,12 +146,14 @@ public class GestorPaquetes {
     private void rellenaDiccionario(JSONArray array) {
         for (int i = 0; i < array.size(); i++) {
             Paquete paquete = new Paquete((JSONObject) array.get(i));
-            if (mapa.containsKey(paquete.getCodCliente())) mapa.get(paquete.getCodCliente()).add(paquete);
-            else {
+            if (mapa.containsKey(paquete.getCodCliente())) //cliente existente
+                mapa.get(paquete.getCodCliente()).add(paquete);//le añadimos el paquete
+            else {//cliente nuevo, lo añadimos y añadimos su paquete
                 mapa.put(paquete.getCodCliente(), new Vector<>());
                 mapa.get(paquete.getCodCliente()).add(paquete);
             }
 			/*
+			Podemos usar esto en lugar de lo de arriba
 			JSONObject jsonObject = (JSONObject) array.get(i);
 			String codigo_cliente = jsonObject.get("codCliente").toString();
 			String cp_origen = jsonObject.get("CPOrigen").toString();
@@ -173,6 +175,7 @@ public class GestorPaquetes {
         if (codCliente == null || !mapa.containsKey(codCliente)) {
             throw new Exception("Codigo de cliente no valido");
         }
+        //En un arrayjson devolvemos todos los paquetes en formato json
         JSONArray jsonArray = new JSONArray();
         for (Paquete paq : mapa.get(codCliente)) {
             jsonArray.add(paq.toJSON());
@@ -231,18 +234,19 @@ public class GestorPaquetes {
      */
     public JSONObject modificaPaquete(String codCliente, long codPaquete, String CPOrigen, String CPDestino, double peso) throws Exception {
         if (codCliente == null || !mapa.containsKey(codCliente)) {
-            throw new Exception("Cliente inexsistente");
+            throw new Exception("Cliente inexistente");
         }
         JSONObject res = new JSONObject();
         for (Paquete paquete : mapa.get(codCliente)) {
-            if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {
-                if (!paquete.getCPOrigen().isEmpty() && !CPOrigen.isEmpty()) {
+            if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {//si es el paq buscado y no ha sido recogido
+                //si procede--> atributo no vacio y parametro pasado no vacio
+                if (!paquete.getCPOrigen().isEmpty() && !CPOrigen.isEmpty()) {//Actualizamos cporigen si procede
                     paquete.setCPOrigen(CPOrigen);
                 }
-                if (!paquete.getCPDestino().isEmpty() && !CPDestino.isEmpty()) {
+                if (!paquete.getCPDestino().isEmpty() && !CPDestino.isEmpty()) {//Actualizamos cpdestino si procede
                     paquete.setCPDestino(CPDestino);
                 }
-                if (paquete.getPeso() != 0.0) paquete.setPeso(peso);
+                if (paquete.getPeso() != 0.0) paquete.setPeso(peso);//Actualizamos peso si procede
 
                 res = paquete.toJSON();
             }
@@ -263,16 +267,16 @@ public class GestorPaquetes {
         if (codCliente == null || !mapa.containsKey(codCliente)) {
             throw new Exception("Cliente inexsistente");
         }
-        Paquete eliminar = null;
+        Paquete paq_eliminar = null;
         JSONObject res = new JSONObject();
         for (Paquete paquete : mapa.get(codCliente)) {
-            if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {
+            if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {//eliminamos el paquete si no ha sido recogido
                 res = paquete.toJSON();
-                eliminar = paquete;
+                paq_eliminar = paquete;
             }
         }
-        if (eliminar != null) {
-            mapa.get(codCliente).remove(eliminar);
+        if (paq_eliminar != null) {
+            mapa.get(codCliente).remove(paq_eliminar);
         }
         return res;
     }
@@ -288,7 +292,7 @@ public class GestorPaquetes {
         JSONArray jsonArray = new JSONArray();
         for (String codigoCli : mapa.keySet()) {
             for (Paquete paquete : mapa.get(codigoCli)) {
-                if (paquete.getFechaRecogida().isEmpty() && paquete.getCPDestino().equals(CPDestino)) {
+                if (paquete.getFechaRecogida().isEmpty() && paquete.getCPDestino().equals(CPDestino)) {//si paquete no recogido y cpdestino coincide
                     jsonArray.add(paquete.toJSON());
                 }
             }
@@ -308,7 +312,7 @@ public class GestorPaquetes {
         JSONObject res = new JSONObject();
         for (String codigoCli : mapa.keySet()) {
             for (Paquete paquete : mapa.get(codigoCli)) {
-                if (paquete.getCodPaquete() == codPaquete) {
+                if (paquete.getCodPaquete() == codPaquete) {//si es el paquete a recoger-->añadimos codmensajero y fecha de recogida
                     paquete.setCodMensajero(codMensajero);
                     paquete.setFechaRecogida(Paquete.fechaHoy());
                     res = paquete.toJSON();

@@ -84,7 +84,7 @@ public class ClienteLocal {
                     try {
                         System.out.println("Introduce el paquete a modificar: ");
                         long paquete = teclado.nextLong();
-                        teclado.nextLine(); //nextLine() lee la línea completa hasta el carácter de nueva línea (\n) que queda en el buffer después de usar nextLong() o nextDouble().
+                        teclado.nextLine(); //nextLine() lee la línea completa hasta el carácter de nueva línea (\n) que queda en el buffer después de usar nextLong() o nextDouble()
                         System.out.println("Introduce un CPDestino nuevo o vacio para no modificar: ");
                         String destino = teclado.nextLine();
                         System.out.println("Introduce un CPOrigen nuevo o vacio para no modificar: ");
