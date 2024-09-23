@@ -43,10 +43,10 @@ public class MensajeroLocal {
         // Crea un gestor de valoraciones
         GestorPaquetes gestor = new GestorPaquetes();
 
-        /*
+
         System.out.print("Introduce tu código de mensajero: ");
         String codMensajero = teclado.nextLine();
-        */
+
 
         int opcion;
         do {
@@ -66,9 +66,9 @@ public class MensajeroLocal {
                     System.out.printf("Introduce un codigo de paquete valido: ");
                     long paquete = teclado.nextLong();
                     teclado.nextLine();
-                    System.out.printf("Introduce un codigo de mensajero: ");
-                    String cod_mensajero = teclado.nextLine();
-                    gestor.recogePaquete(paquete,cod_mensajero);
+//                    System.out.printf("Introduce un codigo de mensajero: ");
+//                    String cod_mensajero = teclado.nextLine();
+                    gestor.recogePaquete(paquete,codMensajero);
                     gestor.guardaDatos();
                 }
 
