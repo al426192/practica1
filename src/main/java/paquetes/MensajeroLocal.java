@@ -68,8 +68,15 @@ public class MensajeroLocal {
                     teclado.nextLine();
 //                    System.out.printf("Introduce un codigo de mensajero: ");
 //                    String cod_mensajero = teclado.nextLine();
-                    gestor.recogePaquete(paquete,codMensajero);
-                    gestor.guardaDatos();
+                    JSONObject res_recoger=gestor.recogePaquete(paquete,codMensajero);
+                    if (res_recoger==null){
+                        System.out.println("Paquete inexistente");
+                        continue;
+                    }
+                    else{
+                        System.out.println("Paquete recogido correctamente");
+                        gestor.guardaDatos();
+                    }
                 }
 
             } // fin switch

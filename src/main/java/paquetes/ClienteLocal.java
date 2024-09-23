@@ -91,9 +91,13 @@ public class ClienteLocal {
                         String origen = teclado.nextLine();
                         System.out.println("Introduce un peso nuevo o vacio para no modificar: ");
                         double peso = teclado.nextDouble();
-                        gestor.modificaPaquete(codCliente, paquete, origen, destino, peso);
+                        JSONObject res_modificar=gestor.modificaPaquete(codCliente, paquete, origen, destino, peso);
+                        if (res_modificar==null){
+                            System.out.println("Paquete no encontrado. Volviendo al menú...");
+                            continue;
+                        };
                         System.out.println("Paquete modificado correctamente");
-                        gestor.guardaDatos();
+                        //esto no, de ello se encarga el 0--> gestor.guardaDatos();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -102,7 +106,12 @@ public class ClienteLocal {
                     try {
                         System.out.println("Introduce el paquete a retirar: ");
                         long paquete = teclado.nextLong();
-                        gestor.retiraPaquete(codCliente,paquete);
+                        JSONObject res_retirar= gestor.retiraPaquete(codCliente,paquete);
+                        if (res_retirar==null){
+                            System.out.println("Paquete no encontrado. Volviendo al menú...");
+                            continue;
+                        };
+                        System.out.println("Paquete retirado correctamente");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

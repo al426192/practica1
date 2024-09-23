@@ -236,7 +236,7 @@ public class GestorPaquetes {
         if (codCliente == null || !mapa.containsKey(codCliente)) {
             throw new Exception("Cliente inexistente");
         }
-        JSONObject res = new JSONObject();
+        JSONObject res = null;
         for (Paquete paquete : mapa.get(codCliente)) {
             if (paquete.getCodPaquete() == codPaquete && paquete.getFechaRecogida().isEmpty()) {//si es el paq buscado y no ha sido recogido
                 //si procede--> atributo no vacio y parametro pasado no vacio
@@ -278,6 +278,7 @@ public class GestorPaquetes {
         if (paq_eliminar != null) {
             mapa.get(codCliente).remove(paq_eliminar);
         }
+        else return null;
         return res;
     }
 
@@ -309,7 +310,7 @@ public class GestorPaquetes {
      * @return un objeto JSON con la información del paquete recogido
      */
     public JSONObject recogePaquete(long codPaquete, String codMensajero) {
-        JSONObject res = new JSONObject();
+        JSONObject res = null;
         for (String codigoCli : mapa.keySet()) {
             for (Paquete paquete : mapa.get(codigoCli)) {
                 if (paquete.getCodPaquete() == codPaquete) {//si es el paquete a recoger-->añadimos codmensajero y fecha de recogida
